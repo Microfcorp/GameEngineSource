@@ -1,0 +1,42 @@
+sett;razm:false,title:Multi Ethernet Game,autoelse:false,color:0
+cls;
+mess;Выберите доступную игру из списка:
+mess;OTS,bigbunt,game1,Music
+if;ots,bigbunt,game1,music,else;4
+ots:goto;12
+bigbunt:goto;19
+game1:goto;28
+music:goto;35
+else:closegame;Вы не выбрали игру
+
+Ethernetconnection;{
+Server;91.202.27.167
+Login;admin
+Password;admin
+Socet;/gameeng.php
+Game;games/OTS.gam
+}
+
+Ethernetconnection;{
+Server;91.202.27.167
+Login;admin
+Password;admin
+Socet;/gameeng.php
+Game;games/bigbunt.gam
+}
+
+Ethernetconnection;{
+Server;91.202.27.167
+Login;admin
+Password;admin
+Socet;/gameeng.php
+Game;games/game1.gam
+}
+
+Ethernetconnection;{
+Server;91.202.27.167
+Login;admin
+Password;admin
+Socet;/gameeng.php
+Game;games/Music.gam
+}

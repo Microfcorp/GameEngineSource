@@ -1,0 +1,5 @@
+c:\users\лехап\documents\visual studio 2015\Projects\game\game\bin\Debug\game.exe
+c:\users\лехап\documents\visual studio 2015\Projects\game\game\bin\Debug\game.pdb
+c:\users\лехап\documents\visual studio 2015\Projects\game\game\obj\Debug\game.csprojResolveAssemblyReference.cache
+c:\users\лехап\documents\visual studio 2015\Projects\game\game\obj\Debug\game.exe
+c:\users\лехап\documents\visual studio 2015\Projects\game\game\obj\Debug\game.pdb

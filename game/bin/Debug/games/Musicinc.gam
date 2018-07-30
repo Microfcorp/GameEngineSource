@@ -1,0 +1,7 @@
+includingas;
+mess;la louze
+if;la louze,else;2
+la louze:mess;Название - песня
+else:closegame;Не верно
+mess;
+finish;Поздравляем! Вы прошли игру

@@ -1,0 +1,15 @@
+sett;razm:false,title:Builders,autoelse:false,color:9
+cls;
+mess;Добро пожаловать в игру StarBuilders.
+mess;Продолжить?
+string;text1:helloy
+messstring;text1
+int;numm1:1
+int;numm2:2
+int;rnd:0
+random;0-10:rnd
+messint;rnd
+let;1+1:consoleprint
+intlet;numm1;+;numm2:numm1
+messint;numm1
+pause;
