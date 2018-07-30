@@ -1,0 +1,8 @@
+C:\Users\Лехап\Documents\Visual Studio 2015\Projects\game\gameSDK\bin\Debug\gameSDK.exe
+C:\Users\Лехап\Documents\Visual Studio 2015\Projects\game\gameSDK\bin\Debug\gameSDK.pdb
+C:\Users\Лехап\Documents\Visual Studio 2015\Projects\game\gameSDK\obj\Debug\gameSDK.csprojResolveAssemblyReference.cache
+C:\Users\Лехап\Documents\Visual Studio 2015\Projects\game\gameSDK\obj\Debug\gameSDK.Form1.resources
+C:\Users\Лехап\Documents\Visual Studio 2015\Projects\game\gameSDK\obj\Debug\gameSDK.Properties.Resources.resources
+C:\Users\Лехап\Documents\Visual Studio 2015\Projects\game\gameSDK\obj\Debug\gameSDK.csproj.GenerateResource.Cache
+C:\Users\Лехап\Documents\Visual Studio 2015\Projects\game\gameSDK\obj\Debug\gameSDK.exe
+C:\Users\Лехап\Documents\Visual Studio 2015\Projects\game\gameSDK\obj\Debug\gameSDK.pdb
