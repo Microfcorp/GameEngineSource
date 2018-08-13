@@ -1,0 +1,7 @@
+C:\Users\10 измерение\Documents\Visual Studio 2015\Projects\game\DialogSystem\bin\Debug\DialogSystem.dll
+C:\Users\10 измерение\Documents\Visual Studio 2015\Projects\game\DialogSystem\bin\Debug\DialogSystem.pdb
+C:\Users\10 измерение\Documents\Visual Studio 2015\Projects\game\DialogSystem\bin\Debug\SystemModule.dll
+C:\Users\10 измерение\Documents\Visual Studio 2015\Projects\game\DialogSystem\bin\Debug\SystemModule.pdb
+C:\Users\10 измерение\Documents\Visual Studio 2015\Projects\game\DialogSystem\obj\Debug\DialogSystem.dll
+C:\Users\10 измерение\Documents\Visual Studio 2015\Projects\game\DialogSystem\obj\Debug\DialogSystem.pdb
+C:\Users\10 измерение\Documents\Visual Studio 2015\Projects\game\DialogSystem\obj\Debug\DialogSystem.csprojResolveAssemblyReference.cache
