@@ -1,0 +1,7 @@
+C:\Users\10 измерение\Documents\Visual Studio 2015\Projects\UIModule\bin\Debug\UIModule.dll
+C:\Users\10 измерение\Documents\Visual Studio 2015\Projects\UIModule\bin\Debug\UIModule.pdb
+C:\Users\10 измерение\Documents\Visual Studio 2015\Projects\UIModule\obj\Debug\UIModule.csprojResolveAssemblyReference.cache
+C:\Users\10 измерение\Documents\Visual Studio 2015\Projects\UIModule\obj\Debug\UIModule.dll
+C:\Users\10 измерение\Documents\Visual Studio 2015\Projects\UIModule\obj\Debug\UIModule.pdb
+C:\Users\10 измерение\Documents\Visual Studio 2015\Projects\UIModule\bin\Debug\SystemModule.dll
+C:\Users\10 измерение\Documents\Visual Studio 2015\Projects\UIModule\bin\Debug\SystemModule.pdb
