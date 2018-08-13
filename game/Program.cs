@@ -8,6 +8,8 @@ using System.Windows.Forms;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Net;
+using System.Reflection;
+using SystemModule;
 
 namespace game
 {
@@ -166,10 +168,18 @@ namespace game
             int lenght = game.Split('\n').Length;
             SortedList<string, string> strings = new SortedList<string, string>();
             SortedList<string, int> ints = new SortedList<string, int>();
+            bool loadmodule = false;
+
+            Assembly asm = null;
+            Type t = null;
+            // создаем экземпляр класса Program
+            object obj = null;
+            // получаем метод GetResult
+            MethodInfo method = null;
 
             for (int i = 0; i < lenght; i++)
             {
-                sled:
+            sled:
                 switch (game.Split('\n')[i].Split(';')[0])
                 {
                     case "mess":
@@ -177,6 +187,37 @@ namespace game
                         break;
                     case "cls":
                         Console.Clear();
+                        break;
+                    case "newmodule":
+                        try
+                        {
+                            asm = Assembly.LoadFrom(game.Split('\n')[i].Split(';')[1]);
+                            t = asm.GetType("GameModule.GameModule", true, true);
+                            // создаем экземпляр класса Program
+                            obj = Activator.CreateInstance(t);
+                            // получаем метод GetResult
+                            method = t.GetMethod("SetParam");
+                            // вызываем метод, передаем ему значения для параметров и получаем результат
+                            loadmodule = true;
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine("Error " + ex.Message);
+                        }
+                        break;
+                    case "module":
+                        if (loadmodule)
+                        {
+                            SortedList<string, string> list1 = new SortedList<string, string>();
+                            foreach (var item in game.Split('\n')[i].Split(';')[1].Split(':')[1].Split(','))
+                            {
+                                list1.Add(item.Split('=')[0], item.Split('=')[1]);
+                            }
+
+                            SystemModule.CommandData tmpaa = new CommandData(game.Split('\n')[i].Split(';')[1].Split(':')[0], list1);
+                            object result = method.Invoke(obj, new object[] { tmpaa });
+                            //Console.WriteLine((result));
+                        }
                         break;
                     case "cashe":
                         string[] files = game.Split('\n')[i].Split(';')[2].Split(',');
@@ -213,7 +254,7 @@ namespace game
                         {
                             ints[outs2] = value;
                         }
-                    break;
+                        break;
                     case "let":
                         string outs = game.Split('\n')[i].Split(';')[1].Split(':')[1];
                         string viraz = game.Split('\n')[i].Split(';')[1].Split(':')[0];
@@ -227,7 +268,7 @@ namespace game
                         {
                             ints[outs] = itog;
                         }
-                    break;
+                        break;
                     case "intlet":
                         string outs1 = game.Split('\n')[i].Split(';')[3].Split(':')[1];
                         string viraz1 = game.Split('\n')[i].Split(';')[1] + game.Split('\n')[i].Split(';')[2] + game.Split('\n')[i].Split(';')[3];
@@ -241,7 +282,7 @@ namespace game
                         {
                             ints[outs1] = itog1;
                         }
-                    break;
+                        break;
                     case "Ethernetconnection":
                         string server = game.Split('\n')[i + 1].Split(';')[1];
                         string login = game.Split('\n')[i + 2].Split(';')[1];
@@ -250,46 +291,46 @@ namespace game
                         string gameputserv = game.Split('\n')[i + 5].Split(';')[1];
 
                         //MessageBox.Show(connecttoserver(server, login, passw, gameputserv, socet));
-                        game += connecttoserver(server, login, passw, gameputserv, socet);                       
+                        game += connecttoserver(server, login, passw, gameputserv, socet);
                         lenght = game.Split('\n').Length;
                         game = game.Replace("getcurrentdirect:", path1);
-                    break;
+                        break;
                     case "ascllart":
                         var tmp = File.ReadAllText(game.Split('\n')[i].Split(';')[1].Split(',')[0]).Remove('\r', ' ');
                         string[] temp = tmp.Split('\n');
-                        
+
                         int cola1 = Convert.ToInt32(game.Split('\n')[i].Split(';')[1].Split(',')[1].Split('-')[0]);
                         int colb1 = Convert.ToInt32(game.Split('\n')[i].Split(';')[1].Split(',')[1].Split('-')[1]);
                         for (int ic1 = 0; ic1 < (colb1 - cola1); ic1++)
                         {
                             Console.WriteLine(temp[cola1 + ic1]);
                         }
-                    break;
-                    case "include":                    
-                        game += File.ReadAllText(game.Split('\n')[i].Split(';')[1]);                       
+                        break;
+                    case "include":
+                        game += File.ReadAllText(game.Split('\n')[i].Split(';')[1]);
                         lenght = game.Split('\n').Length;
                         game = game.Replace("getcurrentdirect:", path1);
-                    break;
+                        break;
                     case "playmusic":
                         SoundPlayer player = new System.Media.SoundPlayer();
                         player.SoundLocation = game.Split('\n')[i].Split(';')[1];
                         player.Play();
-                    break;
+                        break;
                     case "sett":
                         rasm = Convert.ToBoolean(game.Split('\n')[i].Split(';')[1].Split(',')[0].Split(':')[1]);
                         autoelse = Convert.ToBoolean(game.Split('\n')[i].Split(';')[1].Split(',')[2].Split(':')[1]);
                         Console.Title = game.Split('\n')[i].Split(';')[1].Split(',')[1].Split(':')[1];
-                        Console.BackgroundColor = (ConsoleColor)Convert.ToInt32(game.Split('\n')[i].Split(';')[1].Split(',')[3].Split(':')[1]);           
-                    break;
+                        Console.BackgroundColor = (ConsoleColor)Convert.ToInt32(game.Split('\n')[i].Split(';')[1].Split(',')[3].Split(':')[1]);
+                        break;
                     case "goto":
                         i = Convert.ToInt32(game.Split('\n')[i].Split(';')[1]) - 2;
-                    break;
+                        break;
                     case "close":
                         Application.Exit();
-                    break;
+                        break;
                     case "pause":
                         Console.ReadLine();
-                    break;
+                        break;
                     case "finish":
                         MessageBox.Show(game.Split('\n')[i].Split(';')[1]);
                         Console.WriteLine("Вы прошли игру");
@@ -297,19 +338,19 @@ namespace game
                         Application.Restart();
                         break;
                     case "if":
-                        string select = Console.ReadLine();                       
+                        string select = Console.ReadLine();
                         if (!rasm)
                         {
                             select = select.ToLower();
                         }
-                       
+
                         string[] ifs = game.Split('\n')[i].Split(';')[1].Split(',');
                         for (int a = 0; a < ifs.Length; a++)
                         {
-                            if(select == ifs[a])
-                            {                                
+                            if (select == ifs[a])
+                            {
                                 List<string> thens = new List<string>();
-                                for (int c = 1; c <= ifs.Length; c++){thens.Add(game.Split('\n')[i + c]);}
+                                for (int c = 1; c <= ifs.Length; c++) { thens.Add(game.Split('\n')[i + c]); }
                                 for (int b = 0; b < thens.Count; b++)
                                 {
                                     /*string thb = thens[b].Split(':')[0];
@@ -356,6 +397,21 @@ namespace game
                                             }
                                             printimage(put.Split(';')[1]);
                                         }
+                                        else if (thens[b].Split(':')[1].Split(';')[0] == "module")
+                                        {
+                                            if (loadmodule)
+                                            {
+                                                SortedList<string, string> list1 = new SortedList<string, string>();
+                                                foreach (var item in game.Split('\n')[i].Split(';')[1].Split(':')[1].Split(','))
+                                                {
+                                                    list1.Add(item.Split('=')[0], item.Split('=')[1]);
+                                                }
+
+                                                SystemModule.CommandData tmpaa = new CommandData(game.Split('\n')[i].Split(';')[1].Split(':')[0], list1);
+                                                object result = method.Invoke(obj, new object[] { tmpaa });
+                                                Console.WriteLine((result));
+                                            }
+                                        }
                                         else if (thens[b].Split(':')[1].Split(';')[0] == "playmusic")
                                         {
                                             string put = "";
@@ -368,12 +424,12 @@ namespace game
                                             player1.Play();
                                         }
                                         else if (thens[b].Split(':')[1].Split(';')[0] == "ascllart")
-                                        {                                       
+                                        {
                                             string put = "";
                                             for (int i0 = 1; i0 < thens[b].Split(':').Length; i0++)
                                             {
                                                 put += ":" + thens[b].Split(':')[i0];
-                                            } 
+                                            }
                                             var tmp2 = File.ReadAllText(put.Split(';')[1].Split(',')[0]).Remove('\r', ' ');
                                             string[] temp2 = tmp2.Split('\n');
 
@@ -400,14 +456,14 @@ namespace game
                                         //Console.WriteLine(thens[b].Split(':')[1].Split(';')[1]);
                                         i++;
                                         goto sled;
-                                    }                                    
+                                    }
                                     //throw new Exception();
-                                }                               
+                                }
                             }
                             else if (select != ifs[a] && ifs[a] == "else")
                             {
                                 List<string> thens = new List<string>();
-                                for (int c = 1; c <= ifs.Length; c++){thens.Add(game.Split('\n')[i + c]);}
+                                for (int c = 1; c <= ifs.Length; c++) { thens.Add(game.Split('\n')[i + c]); }
                                 for (int b = 0; b < thens.Count; b++)
                                 {
                                     if (thens[b].Split(':')[0] == "else")
@@ -434,6 +490,21 @@ namespace game
                                             {
                                                 b = Convert.ToInt32(thens[b].Split(':')[1].Split(';')[1]);
                                             }
+                                            else if (thens[b].Split(':')[1].Split(';')[0] == "module")
+                                            {
+                                                if (loadmodule)
+                                                {
+                                                    SortedList<string, string> list1 = new SortedList<string, string>();
+                                                    foreach (var item in game.Split('\n')[i].Split(';')[1].Split(':')[1].Split(','))
+                                                    {
+                                                        list1.Add(item.Split('=')[0], item.Split('=')[1]);
+                                                    }
+
+                                                    SystemModule.CommandData tmpaa = new CommandData(game.Split('\n')[i].Split(';')[1].Split(':')[0], list1);
+                                                    object result = method.Invoke(obj, new object[] { tmpaa });
+                                                    Console.WriteLine((result));
+                                                }
+                                            }
                                             else if (thens[b].Split(':')[1].Split(';')[0] == "printimg")
                                             {
                                                 string put = "";
@@ -442,7 +513,7 @@ namespace game
                                                     put += ":" + thens[b].Split(':')[i0];
                                                 }
                                                 Bitmap bmpSrc1 = new Bitmap(@put.Split(';')[1], true);
-                                                ConsoleWriteImage(bmpSrc1);                                             
+                                                ConsoleWriteImage(bmpSrc1);
                                             }
                                             else if (thens[b].Split(':')[1].Split(';')[0] == "setbackphoto")
                                             {
@@ -499,7 +570,7 @@ namespace game
                         }
                         break;
                 }
-                }
+            }
             
          }
             }
