@@ -1,7 +1,7 @@
 sett;razm:false,title:DLLTest,autoelse:false,color:9
 cls;
 mess;Добро пожаловать в игру DLLTest.
-newmodule;C:\\Users\\10 измерение\\Documents\\Visual Studio 2015\\Projects\\game\\DialogSystem\\bin\\Debug\\DialogSystem.dll
+newmodule;DialogSystem.dll
 module;AddPers:Name=Лехап
 module;AddPers:Name=АеАе
 module;AddPers:Name=Настька
