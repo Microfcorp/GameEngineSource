@@ -1,0 +1,7 @@
+C:\Users\Лехап\Documents\Visual Studio 2015\Projects\game\IOSystem\bin\Debug\IOSystem.dll
+C:\Users\Лехап\Documents\Visual Studio 2015\Projects\game\IOSystem\bin\Debug\IOSystem.pdb
+C:\Users\Лехап\Documents\Visual Studio 2015\Projects\game\IOSystem\bin\Debug\SystemModule.dll
+C:\Users\Лехап\Documents\Visual Studio 2015\Projects\game\IOSystem\bin\Debug\SystemModule.pdb
+C:\Users\Лехап\Documents\Visual Studio 2015\Projects\game\IOSystem\obj\Debug\IOSystem.csprojResolveAssemblyReference.cache
+C:\Users\Лехап\Documents\Visual Studio 2015\Projects\game\IOSystem\obj\Debug\IOSystem.dll
+C:\Users\Лехап\Documents\Visual Studio 2015\Projects\game\IOSystem\obj\Debug\IOSystem.pdb
