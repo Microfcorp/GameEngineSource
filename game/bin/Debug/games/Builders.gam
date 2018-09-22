@@ -5,11 +5,13 @@ mess;Продолжить?
 string;text1:123
 mess;$text1
 mess;Введите значение
-if;$text1,нет,else
+
+if;$text1,нет,else;2
 $text1:mess;Правильно
 нет:mess;Ошибочка
 else:finish;tt
 mess;
+
 int;numm1:1
 int;numm2:2
 int;rnd:0

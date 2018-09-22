@@ -2,3 +2,8 @@ C:\Users\10 измерение\Documents\Visual Studio 2015\Projects\game\System
 C:\Users\10 измерение\Documents\Visual Studio 2015\Projects\game\SystemModule\bin\Debug\SystemModule.pdb
 C:\Users\10 измерение\Documents\Visual Studio 2015\Projects\game\SystemModule\obj\Debug\SystemModule.dll
 C:\Users\10 измерение\Documents\Visual Studio 2015\Projects\game\SystemModule\obj\Debug\SystemModule.pdb
+C:\Users\Лехап\Documents\Visual Studio 2015\Projects\game\SystemModule\bin\Debug\SystemModule.dll
+C:\Users\Лехап\Documents\Visual Studio 2015\Projects\game\SystemModule\bin\Debug\SystemModule.pdb
+C:\Users\Лехап\Documents\Visual Studio 2015\Projects\game\SystemModule\obj\Debug\SystemModule.csprojResolveAssemblyReference.cache
+C:\Users\Лехап\Documents\Visual Studio 2015\Projects\game\SystemModule\obj\Debug\SystemModule.dll
+C:\Users\Лехап\Documents\Visual Studio 2015\Projects\game\SystemModule\obj\Debug\SystemModule.pdb

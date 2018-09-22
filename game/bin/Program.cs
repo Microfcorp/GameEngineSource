@@ -25,18 +25,9 @@ namespace game
                 {
                     Console.WriteLine("{0}. {1}", i, getfullgame()[i]);
                 }
-                var s = Console.ReadLine();
-                int n = 0;
-
-                if (int.TryParse(s, out n))
-                {
-                    if (getfullgame().Length < n || getfullgame().Length >= 0)
-                    {
-                        loadgame(Environment.CurrentDirectory + "\\games\\" + getfullgame()[n]);
-                    }
-                }
+                loadgame(Environment.CurrentDirectory + "\\games\\" + getfullgame()[Convert.ToInt32(Console.ReadLine())]);
             }
-            else if (args[0] != null)
+            else if(args[0] != null)
             {
                 loadgame(args[0]);
             }
@@ -134,7 +125,7 @@ namespace game
         }
 
         public static string connecttoserver(string server, string login, string passw, string path, string socet)
-        {
+        {            
             string tmp = "";
             WebRequest request = WebRequest.Create("http://" + server + "/" + socet + "?login=" + login + "&passw=" + passw + "&path=" + path);
             WebResponse response = request.GetResponse();
@@ -145,7 +136,7 @@ namespace game
                     string line = "";
                     while ((line = reader.ReadLine()) != null)
                     {
-                        tmp += line + "\n";
+                       tmp += line + "\n";
                     }
                 }
             }
@@ -171,7 +162,7 @@ namespace game
         public static void loadgame(string path)
         {
             string path1 = path.Replace(path.Split('\\')[path.Split('\\').Length - 1], "");
-            string game = File.ReadAllText(path).Replace("\r", "").Replace("getcurrentdirect:", path1);
+            string game = File.ReadAllText(path).Replace("\r","").Replace("getcurrentdirect:", path1);
             bool rasm = false;
             bool autoelse = false;
             int lenght = game.Split('\n').Length;
@@ -188,30 +179,11 @@ namespace game
 
             for (int i = 0; i < lenght; i++)
             {
-                sled:
+            sled:
                 switch (game.Split('\n')[i].Split(';')[0])
                 {
                     case "mess":
-                        if (game.Split('\n')[i].Split(';')[1].StartsWith("$"))
-                        {
-                            if (strings.ContainsKey(game.Split('\n')[i].Split(';')[1].Substring(1)))
-                            {
-                                Console.WriteLine(strings[game.Split('\n')[i].Split(';')[1].Substring(1)]);
-                            }
-                            else if (ints.ContainsKey(game.Split('\n')[i].Split(';')[1].Substring(1)))
-                            {
-                                Console.WriteLine(ints[game.Split('\n')[i].Split(';')[1].Substring(1)]);
-                            }
-                            else
-                            {
-                                Console.WriteLine(game.Split('\n')[i].Split(';')[1]);
-                            }
-                        }
-                        else
-                        {
-                            Console.WriteLine(game.Split('\n')[i].Split(';')[1]);
-                        }
-
+                        Console.WriteLine(game.Split('\n')[i].Split(';')[1]);
                         break;
                     case "cls":
                         Console.Clear();
@@ -264,6 +236,12 @@ namespace game
                     case "string":
                         strings.Add(game.Split('\n')[i].Split(';')[1].Split(':')[0], game.Split('\n')[i].Split(';')[1].Split(':')[1]);
                         break;
+                    case "messstring":
+                        Console.WriteLine(strings[game.Split('\n')[i].Split(';')[1]]);
+                        break;
+                    case "messint":
+                        Console.WriteLine(ints[game.Split('\n')[i].Split(';')[1]].ToString());
+                        break;
                     case "int":
                         ints.Add(game.Split('\n')[i].Split(';')[1].Split(':')[0], Convert.ToInt32(game.Split('\n')[i].Split(';')[1].Split(':')[1]));
                         break;
@@ -306,17 +284,11 @@ namespace game
                         }
                         break;
                     case "Ethernetconnection":
-                        SortedList<string, string> EtherConnect = new SortedList<string, string>();
-                        for (int o = 1; !game.Split('\n')[i + o].EndsWith("}"); o++)
-                        {
-                            EtherConnect.Add(game.Split('\n')[i + o].Split(';')[0].ToLower(), game.Split('\n')[i + o].Split(';')[1]);
-                        }
-
-                        string server = EtherConnect["server"];
-                        string login = EtherConnect["login"];
-                        string passw = EtherConnect["password"];
-                        string socet = EtherConnect["socet"];
-                        string gameputserv = EtherConnect["game"];
+                        string server = game.Split('\n')[i + 1].Split(';')[1];
+                        string login = game.Split('\n')[i + 2].Split(';')[1];
+                        string passw = game.Split('\n')[i + 3].Split(';')[1];
+                        string socet = game.Split('\n')[i + 4].Split(';')[1];
+                        string gameputserv = game.Split('\n')[i + 5].Split(';')[1];
 
                         //MessageBox.Show(connecttoserver(server, login, passw, gameputserv, socet));
                         game += connecttoserver(server, login, passw, gameputserv, socet);
@@ -357,37 +329,18 @@ namespace game
                         break;
                     case "goto":
                         i = Convert.ToInt32(game.Split('\n')[i].Split(';')[1]) - 2;
-                        //goto sled;
                         break;
                     case "close":
-                        System.Diagnostics.Process.GetCurrentProcess().Kill();
-                        break;
-                    case "removestr":
-                        //lenght -= Convert.ToInt32(game.Split('\n')[i].Split(';')[1]);
-                        game.Split('\n')[Convert.ToInt32(game.Split('\n')[i].Split(';')[1])] = "//";
+                        Application.Exit();
                         break;
                     case "pause":
                         Console.ReadLine();
-                        break;
-                    case "closegame":
-                        Console.WriteLine(game.Split('\n')[i].Split(';')[1]);
-                        System.Threading.Thread.Sleep(1500);
-                        System.Diagnostics.Process.GetCurrentProcess().Kill();
-                        break;
-                    case "messas":
-                        int cola = Convert.ToInt32(game.Split('\n')[i].Split(';')[1].Split('-')[0]);
-                        int colb = Convert.ToInt32(game.Split('\n')[i].Split(';')[1].Split('-')[1]);
-                        for (int ic = 0; ic < (colb - cola); ic++)
-                        {
-                            Console.WriteLine(game.Split('\n')[cola + ic].Split(';')[1]);
-                        }
                         break;
                     case "finish":
                         MessageBox.Show(game.Split('\n')[i].Split(';')[1]);
                         Console.WriteLine("Вы прошли игру");
                         Console.ReadLine();
                         Application.Restart();
-                        System.Diagnostics.Process.GetCurrentProcess().Kill();
                         break;
                     case "if":
                         string select = Console.ReadLine();
@@ -397,44 +350,119 @@ namespace game
                         }
 
                         string[] ifs = game.Split('\n')[i].Split(';')[1].Split(',');
-                        for (int p = 0; p < ifs.Length; p++)
-                        {
-                            if (ifs[p].StartsWith("$"))
-                            {
-                                ifs[p] = ifs[p].Substring(1).Replace(ifs[p].Substring(1), strings[ifs[p].Substring(1)]);
-                            }
-                        }
                         for (int a = 0; a < ifs.Length; a++)
                         {
                             if (select == ifs[a])
                             {
                                 List<string> thens = new List<string>();
                                 for (int c = 1; c <= ifs.Length; c++) { thens.Add(game.Split('\n')[i + c]); }
-
                                 for (int b = 0; b < thens.Count; b++)
                                 {
-                                    if (thens[b].StartsWith("$"))
+                                    /*string thb = thens[b].Split(':')[0];
+                                    if (!rasm)
                                     {
-                                        string newstr = thens[b].Split(':')[0].Substring(1).Replace(thens[b].Split(':')[0].Substring(1), strings[thens[b].Split(':')[0].Substring(1)]);
-
-                                        for (int u = 1; u < thens[b].Split(':').Length; u++)
-                                        {
-                                            newstr += ":" + thens[b].Split(':')[u];
-                                        }
-                                        thens[b] = newstr;
-                                    }
+                                        thb = thb.ToLower();
+                                    }*/
 
                                     if (thens[b].Split(':')[0] == select)
                                     {
-                                        game += String.Format("\nclosegame;\n{1}\ngoto;{0}", (i + 2).ToString(), thens[b].Split(':')[1]);
-                                        lenght = game.Split('\n').Length + 1;
-                                        i = game.Split('\n').Length - 2;
+                                        if (thens[b].Split(':')[1].Split(';')[0] == "closegame")
+                                        {
+                                            //Console.WriteLine("CLOSEEEEEEEEEEE");                                       
+                                            Console.WriteLine(thens[b].Split(':')[1].Split(';')[1]);
+                                            System.Threading.Thread.Sleep(1500);
+                                            System.Diagnostics.Process.GetCurrentProcess().Kill();
+                                            //break;
+                                            //
+                                        }
+                                        else if (thens[b].Split(':')[1].Split(';')[0] == "messstring")
+                                        {
+                                            Console.WriteLine(strings[thens[b].Split(':')[1].Split(';')[1]]);
+                                        }
+                                        else if (thens[b].Split(':')[1].Split(';')[0] == "mess")
+                                        {
+                                            Console.WriteLine(thens[b].Split(':')[1].Split(';')[1]);
+                                        }
+                                        else if (thens[b].Split(':')[1].Split(';')[0] == "printimg")
+                                        {
+                                            string put = "";
+                                            for (int i0 = 1; i0 < thens[b].Split(':').Length; i0++)
+                                            {
+                                                put += ":" + thens[b].Split(':')[i0];
+                                            }
+                                            Bitmap bmpSrc1 = new Bitmap(@put.Split(';')[1], true);
+                                            ConsoleWriteImage(bmpSrc1);
+                                        }
+                                        else if (thens[b].Split(':')[1].Split(';')[0] == "setbackphoto")
+                                        {
+                                            string put = "";
+                                            for (int i0 = 1; i0 < thens[b].Split(':').Length; i0++)
+                                            {
+                                                put += ":" + thens[b].Split(':')[i0];
+                                            }
+                                            printimage(put.Split(';')[1]);
+                                        }
+                                        else if (thens[b].Split(':')[1].Split(';')[0] == "module")
+                                        {
+                                            if (loadmodule)
+                                            {
+                                                SortedList<string, string> list1 = new SortedList<string, string>();
+                                                foreach (var item in game.Split('\n')[i].Split(';')[1].Split(':')[1].Split(','))
+                                                {
+                                                    list1.Add(item.Split('=')[0], item.Split('=')[1]);
+                                                }
 
+                                                SystemModule.CommandData tmpaa = new CommandData(game.Split('\n')[i].Split(';')[1].Split(':')[0], list1);
+                                                object result = method.Invoke(obj, new object[] { tmpaa });
+                                                Console.WriteLine((result));
+                                            }
+                                        }
+                                        else if (thens[b].Split(':')[1].Split(';')[0] == "playmusic")
+                                        {
+                                            string put = "";
+                                            for (int i0 = 1; i0 < thens[b].Split(':').Length; i0++)
+                                            {
+                                                put += ":" + thens[b].Split(':')[i0];
+                                            }
+                                            SoundPlayer player1 = new System.Media.SoundPlayer();
+                                            player1.SoundLocation = put.Split(';')[1];
+                                            player1.Play();
+                                        }
+                                        else if (thens[b].Split(':')[1].Split(';')[0] == "ascllart")
+                                        {
+                                            string put = "";
+                                            for (int i0 = 1; i0 < thens[b].Split(':').Length; i0++)
+                                            {
+                                                put += ":" + thens[b].Split(':')[i0];
+                                            }
+                                            var tmp2 = File.ReadAllText(put.Split(';')[1].Split(',')[0]).Remove('\r', ' ');
+                                            string[] temp2 = tmp2.Split('\n');
 
-                                        //i++;
+                                            int cola12 = Convert.ToInt32(thens[b].Split(':')[2].Split(',')[1].Split('-')[0]);
+                                            int colb12 = Convert.ToInt32(thens[b].Split(':')[2].Split(',')[1].Split('-')[1]);
+                                            for (int ic1 = 0; ic1 < (colb12 - cola12); ic1++)
+                                            {
+                                                Console.WriteLine(temp2[cola12 + ic1]);
+                                            }
+                                        }
+                                        else if (thens[b].Split(':')[1].Split(';')[0] == "goto")
+                                        {
+                                            i = Convert.ToInt32(thens[b].Split(':')[1].Split(';')[1]) - 2;
+                                        }
+                                        else if (thens[b].Split(':')[1].Split(';')[0] == "messas")
+                                        {
+                                            int cola = Convert.ToInt32(thens[b].Split(':')[1].Split(';')[1].Split('-')[0]);
+                                            int colb = Convert.ToInt32(thens[b].Split(':')[1].Split(';')[1].Split('-')[1]);
+                                            for (int ic = 0; ic < (colb - cola); ic++)
+                                            {
+                                                Console.WriteLine(game.Split('\n')[cola + ic].Split(';')[1]);
+                                            }
+                                        }
+                                        //Console.WriteLine(thens[b].Split(':')[1].Split(';')[1]);
+                                        i++;
                                         goto sled;
-
                                     }
+                                    //throw new Exception();
                                 }
                             }
                             else if (select != ifs[a] && ifs[a] == "else")
@@ -443,7 +471,6 @@ namespace game
                                 for (int c = 1; c <= ifs.Length; c++) { thens.Add(game.Split('\n')[i + c]); }
                                 for (int b = 0; b < thens.Count; b++)
                                 {
-
                                     if (thens[b].Split(':')[0] == "else")
                                     {
                                         if (autoelse)
@@ -454,21 +481,102 @@ namespace game
                                         }
                                         else
                                         {
-                                            game += String.Format("\nclosegame;\n{1}\ngoto;{0}", (i + 2).ToString(), thens[b].Split(':')[1]);
-                                            lenght = game.Split('\n').Length + 1;
-                                            i = game.Split('\n').Length - 2;
+                                            if (thens[b].Split(':')[1].Split(';')[0] == "closegame")
+                                            {
+                                                Console.WriteLine(thens[b].Split(':')[1].Split(';')[1]);
+                                                System.Threading.Thread.Sleep(1500);
+                                                System.Diagnostics.Process.GetCurrentProcess().Kill();
+                                            }
+                                            else if (thens[b].Split(':')[1].Split(';')[0] == "mess")
+                                            {
+                                                Console.WriteLine(thens[b].Split(':')[1].Split(';')[1]);
+                                            }
+                                            else if (thens[b].Split(':')[1].Split(';')[0] == "goto")
+                                            {
+                                                i = Convert.ToInt32(thens[b].Split(':')[1].Split(';')[1]);
+                                            }
+                                            else if (thens[b].Split(':')[1].Split(';')[0] == "module")
+                                            {
+                                                if (loadmodule)
+                                                {
+                                                    SortedList<string, string> list1 = new SortedList<string, string>();
+                                                    foreach (var item in game.Split('\n')[i].Split(';')[1].Split(':')[1].Split(','))
+                                                    {
+                                                        list1.Add(item.Split('=')[0], item.Split('=')[1]);
+                                                    }
 
+                                                    SystemModule.CommandData tmpaa = new CommandData(game.Split('\n')[i].Split(';')[1].Split(':')[0], list1);
+                                                    object result = method.Invoke(obj, new object[] { tmpaa });
+                                                    Console.WriteLine((result));
+                                                }
+                                            }
+                                            else if (thens[b].Split(':')[1].Split(';')[0] == "printimg")
+                                            {
+                                                string put = "";
+                                                for (int i0 = 1; i0 < thens[b].Split(':').Length; i0++)
+                                                {
+                                                    put += ":" + thens[b].Split(':')[i0];
+                                                }
+                                                Bitmap bmpSrc1 = new Bitmap(@put.Split(';')[1], true);
+                                                ConsoleWriteImage(bmpSrc1);
+                                            }
+                                            else if (thens[b].Split(':')[1].Split(';')[0] == "setbackphoto")
+                                            {
+                                                string put = "";
+                                                for (int i0 = 1; i0 < thens[b].Split(':').Length; i0++)
+                                                {
+                                                    put += ":" + thens[b].Split(':')[i0];
+                                                }
+                                                printimage(put.Split(';')[1]);
+                                            }
+                                            else if (thens[b].Split(':')[1].Split(';')[0] == "playmusic")
+                                            {
+                                                string put = "";
+                                                for (int i0 = 1; i0 < thens[b].Split(':').Length; i0++)
+                                                {
+                                                    put += ":" + thens[b].Split(':')[i0];
+                                                }
+                                                SoundPlayer player1 = new System.Media.SoundPlayer();
+                                                player1.SoundLocation = put.Split(';')[1];
+                                                player1.Play();
+                                            }
+                                            else if (thens[b].Split(':')[1].Split(';')[0] == "ascllart")
+                                            {
+                                                string put = "";
+                                                for (int i0 = 1; i0 < thens[b].Split(':').Length; i0++)
+                                                {
+                                                    put += ":" + thens[b].Split(':')[i0];
+                                                }
+                                                var tmp2 = File.ReadAllText(put.Split(';')[1].Split(',')[0]).Remove('\r', ' ');
+                                                string[] temp2 = tmp2.Split('\n');
 
-                                            //i++;
-                                            goto sled;
+                                                int cola12 = Convert.ToInt32(thens[b].Split(':')[2].Split(',')[1].Split('-')[0]);
+                                                int colb12 = Convert.ToInt32(thens[b].Split(':')[2].Split(',')[1].Split('-')[1]);
+                                                for (int ic1 = 0; ic1 < (colb12 - cola12); ic1++)
+                                                {
+                                                    Console.WriteLine(temp2[cola12 + ic1]);
+                                                }
+                                            }
+                                            else if (thens[b].Split(':')[1].Split(';')[0] == "messas")
+                                            {
+                                                int cola = Convert.ToInt32(thens[b].Split(':')[1].Split(';')[1].Split('-')[0]);
+                                                int colb = Convert.ToInt32(thens[b].Split(':')[1].Split(';')[1].Split('-')[1]);
+                                                for (int ic = 0; ic < (colb - cola); ic++)
+                                                {
+                                                    Console.WriteLine(game.Split('\n')[cola + ic].Split(';')[1]);
+                                                }
+                                            }
                                         }
                                     }
                                 }
                             }
+
+
                         }
                         break;
                 }
             }
+            
+         }
+            }
         }
-    }
-}

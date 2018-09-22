@@ -10,3 +10,5 @@ C:\Users\10 измерение\Documents\Visual Studio 2015\Projects\game\bin\De
 C:\Users\10 измерение\Documents\Visual Studio 2015\Projects\game\bin\Debug\game.pdb
 C:\Users\10 измерение\Documents\Visual Studio 2015\Projects\game\bin\Debug\SystemModule.dll
 C:\Users\10 измерение\Documents\Visual Studio 2015\Projects\game\bin\Debug\SystemModule.pdb
+C:\Users\Лехап\Documents\Visual Studio 2015\Projects\game\game\bin\Debug\SystemModule.dll
+C:\Users\Лехап\Documents\Visual Studio 2015\Projects\game\game\bin\Debug\SystemModule.pdb
