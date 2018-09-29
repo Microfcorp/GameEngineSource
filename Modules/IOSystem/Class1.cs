@@ -23,6 +23,10 @@ namespace GameModule
             {
                 ReadAndWrite(data.Params["path"], data.Params["text"], data.Params["split"]);
             }
+            else if (data.Name == "ReadAndFind")
+            {
+                ReadAndFind(data.Params["path"], data.Params["find"]);
+            }
         }
 
         public void ReadFile(string path)
@@ -35,8 +39,23 @@ namespace GameModule
         }
         public void ReadAndWrite(string path, string text, string split)
         {
-            string str = File.ReadAllText(path);
+            string str = "";
+            if (File.Exists(path))
+            {
+               str = File.ReadAllText(path);
+            }
             File.WriteAllText(path, str + split + text);
+        }
+        public void ReadAndFind(string path, string text)
+        {
+            string str = File.ReadAllText(path);
+            foreach (var item in str.Split('\n'))
+            {
+                if(item.Split('=')[0] == text)
+                {
+                    GameEngine.mess(item.Split('=')[1]);
+                }
+            }
         }
     }
 }

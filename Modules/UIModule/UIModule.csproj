@@ -45,7 +45,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\game\SystemModule\SystemModule.csproj">
+    <ProjectReference Include="..\SystemModule\SystemModule.csproj">
       <Project>{3861d59c-46ae-485f-b476-2e35b208b9d2}</Project>
       <Name>SystemModule</Name>
     </ProjectReference>
