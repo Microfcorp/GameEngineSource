@@ -10,6 +10,7 @@ using System.Drawing.Imaging;
 using System.Net;
 using System.Reflection;
 using SystemModule;
+using System.Diagnostics;
 
 namespace game
 {
@@ -171,7 +172,7 @@ namespace game
         public static void loadgame(string path)
         {
             string path1 = path.Replace(path.Split('\\')[path.Split('\\').Length - 1], "");
-            string game = File.ReadAllText(path).Replace("\r", "").Replace("getcurrentdirect:", path1);
+            string game = File.ReadAllText(path).Replace("\r", "").Replace("getcurrentdirect:", path1).Replace("currentname:", Environment.UserName).Replace("newline:", Environment.NewLine);
             bool rasm = false;
             bool autoelse = false;
             int lenght = game.Split('\n').Length;
@@ -179,12 +180,12 @@ namespace game
             SortedList<string, int> ints = new SortedList<string, int>();
             bool loadmodule = false;
 
-            Assembly asm = null;
-            Type t = null;
+            SortedList<string, Assembly> asm = new SortedList<string, Assembly>();
+            SortedList<string, Type> t = new SortedList<string, Type>();
             // создаем экземпляр класса Program
-            object obj = null;
+            SortedList<string, object> obj = new SortedList<string, object>();
             // получаем метод GetResult
-            MethodInfo method = null;
+            SortedList<string, MethodInfo> method = new SortedList<string, MethodInfo>();
 
             for (int i = 0; i < lenght; i++)
             {
@@ -219,12 +220,13 @@ namespace game
                     case "newmodule":
                         try
                         {
-                            asm = Assembly.LoadFrom(game.Split('\n')[i].Split(';')[1]);
-                            t = asm.GetType("GameModule.GameModule", true, true);
+                            string name = game.Split('\n')[i].Split(';')[1];
+                            asm[name] = Assembly.LoadFrom(game.Split('\n')[i].Split(';')[2]);
+                            t[name] = asm[name].GetType("GameModule.GameModule", true, true);
                             // создаем экземпляр класса Program
-                            obj = Activator.CreateInstance(t);
+                            obj[name] = Activator.CreateInstance(t[name]);
                             // получаем метод GetResult
-                            method = t.GetMethod("SetParam");
+                            method[name] = t[name].GetMethod("SetParam");
                             // вызываем метод, передаем ему значения для параметров и получаем результат
                             loadmodule = true;
                         }
@@ -236,14 +238,34 @@ namespace game
                     case "module":
                         if (loadmodule)
                         {
+                            string name = game.Split('\n')[i].Split(';')[1];
+
                             SortedList<string, string> list1 = new SortedList<string, string>();
-                            foreach (var item in game.Split('\n')[i].Split(';')[1].Split(':')[1].Split(','))
+                            foreach (var item in game.Split('\n')[i].Split(';')[2].Split(':')[1].Split(','))
                             {
-                                list1.Add(item.Split('=')[0], item.Split('=')[1]);
+                                if (item.Split('=')[1].StartsWith("$"))
+                                {
+                                    if (strings.ContainsKey(item.Split('=')[1].Substring(1)))
+                                    {
+                                        list1.Add(item.Split('=')[0], strings[item.Split('=')[1].Substring(1)]);
+                                    }
+                                    else if (ints.ContainsKey(item.Split('=')[1].Substring(1)))
+                                    {
+                                        list1.Add(item.Split('=')[0], ints[item.Split('=')[1].Substring(1)].ToString());
+                                    }
+                                    else
+                                    {
+                                        list1.Add(item.Split('=')[0], item.Split('=')[1]);
+                                    }
+                                }
+                                else
+                                {
+                                    list1.Add(item.Split('=')[0], item.Split('=')[1]);
+                                }                              
                             }
 
-                            SystemModule.CommandData tmpaa = new CommandData(game.Split('\n')[i].Split(';')[1].Split(':')[0], list1);
-                            object result = method.Invoke(obj, new object[] { tmpaa });
+                            SystemModule.CommandData tmpaa = new CommandData(game.Split('\n')[i].Split(';')[2].Split(':')[0], list1);
+                            object result = method[name].Invoke(obj[name], new object[] { tmpaa });
                             //Console.WriteLine((result));
                         }
                         break;
@@ -266,6 +288,12 @@ namespace game
                         break;
                     case "int":
                         ints.Add(game.Split('\n')[i].Split(';')[1].Split(':')[0], Convert.ToInt32(game.Split('\n')[i].Split(';')[1].Split(':')[1]));
+                        break;
+                    case "Applications":
+                        if(game.Split('\n')[i].Split(';')[1] == "Start")
+                        {
+                            Process.Start(game.Split('\n')[i].Split(';')[2], game.Split('\n')[i].Split(';')[3]);
+                        }
                         break;
                     case "random":
                         Random rnd = new Random();
@@ -321,7 +349,7 @@ namespace game
                         //MessageBox.Show(connecttoserver(server, login, passw, gameputserv, socet));
                         game += connecttoserver(server, login, passw, gameputserv, socet);
                         lenght = game.Split('\n').Length;
-                        game = game.Replace("getcurrentdirect:", path1);
+                        game = game.Replace("getcurrentdirect:", path1).Replace("currentname:", Environment.UserName).Replace("newline:", Environment.NewLine);
                         break;
                     case "ascllart":
                         var tmp = File.ReadAllText(game.Split('\n')[i].Split(';')[1].Split(',')[0]).Remove('\r', ' ');
@@ -337,7 +365,7 @@ namespace game
                     case "include":
                         game += File.ReadAllText(game.Split('\n')[i].Split(';')[1]);
                         lenght = game.Split('\n').Length;
-                        game = game.Replace("getcurrentdirect:", path1);
+                        game = game.Replace("getcurrentdirect:", path1).Replace("currentname:", Environment.UserName).Replace("newline:", Environment.NewLine);
                         break;
                     case "playmusic":
                         SoundPlayer player = new System.Media.SoundPlayer();
@@ -367,6 +395,7 @@ namespace game
                         game.Split('\n')[Convert.ToInt32(game.Split('\n')[i].Split(';')[1])] = "//";
                         break;
                     case "pause":
+                        Console.WriteLine(game.Split('\n')[i].Split(';')[1]);
                         Console.ReadLine();
                         break;
                     case "closegame":

@@ -1,0 +1,51 @@
+sett;razm:false,title:Test1.1,autoelse:false,color:9
+cls;
+newmodule;IO;IOSystem.dll
+int;score:0
+int;onescore:5
+mess;Добро пожаловать на тестирование currentname:. Максимальный результат 30 баллов
+pause;Ну, начнем же?
+mess;Сколько будет 375 в BIN системе счисления
+if;101110111,else
+101110111:mess;Молодец!!!
+else:goto;47
+mess;
+intlet;score;+;onescore:score
+mess;Сколько будет 375 в восьмиричной системе счисления
+if;567,else
+567:mess;Молодец!!!
+else:goto;47
+mess;
+intlet;score;+;onescore:score
+mess;Сколько будет 375 в HEX системе счисления
+if;177,else
+177:mess;Молодец!!!
+else:goto;47
+mess;
+intlet;score;+;onescore:score
+mess;Сколько будет текущий год в HEX системе счисления
+if;7e2,else
+7e2:mess;Молодец!!!
+else:goto;47
+mess;
+intlet;score;+;onescore:score
+mess;Сколько будет текущий год в BIN системе счисления
+if;11111100010,else
+11111100010:mess;Молодец!!!
+else:goto;47
+mess;
+intlet;score;+;onescore:score
+mess;Сколько будет 999 в BIN системе счисления
+if;1111100111,else
+1111100111:mess;Молодец!!!
+else:goto;47
+mess;
+intlet;score;+;onescore:score
+//pause;
+finish;ОК
+//Функция 2
+module;IO;WriteFile:path=currentname:.txt,text=$score
+mess;Вы набрали
+mess;$score
+mess;Очков
+closegame;
