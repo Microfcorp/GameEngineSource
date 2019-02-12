@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -159,6 +160,123 @@ namespace SystemModule
             Console.ReadLine();
             Application.Restart();
             System.Diagnostics.Process.GetCurrentProcess().Kill();
+        }
+        public static class Applications
+        {
+            public static void Start(string name, string args)
+            {
+                Process.Start(name, args);
+            }
+            public static void Resize(int X, int Y)
+            {
+                Console.SetBufferSize(X, Y);
+            }
+        }
+        public static int Random(int min, int max)
+        {
+            Random rnd = new Random();
+            return rnd.Next(min, max);
+        }
+        public static void Crash(string help)
+        {
+            throw new Exception(help);
+        }
+        public static class Vars
+        {
+            public class KeyAndValue
+            {
+                public string Key
+                {
+                    get;
+                    private set;
+                }
+                public string Value
+                {
+                    get;
+                    private set;
+                }
+                public int ValueToInt
+                {
+                    get
+                    {
+                        int res = 0;
+                        bool ok = int.TryParse(Value, out res);
+                        if (ok)
+                            return res;
+                        else
+                            return 0xFF;
+                    }
+                }
+
+                public TypeVars Type
+                {
+                    get;
+                    private set;
+                }
+
+                public enum TypeVars
+                {
+                    String,
+                    Int,
+                }
+                    
+                internal KeyAndValue(string key, string value)
+                {
+                    Key = key;
+                    Value = value;
+
+                    int res = 0;
+                    bool ok = int.TryParse(Value, out res);
+                    if (ok)
+                        Type = TypeVars.Int;
+                    else
+                        Type = TypeVars.String;
+                }
+            }
+            public static KeyAndValue[] GetVars()
+            {
+                string tmp = "";
+                if (File.Exists(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\ConsoleGameEngine.tmp"))
+                {
+                    tmp = File.ReadAllText(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\ConsoleGameEngine.tmp");
+                }
+                else
+                {
+                    Crash("Ошибка, переменнные еще не объявлены");                   
+                }                
+                string[] vars = tmp.Split(';');
+                List<KeyAndValue> ret = new List<KeyAndValue>();
+                foreach (var item in vars)
+                {
+                    if(item.Split('=').Length > 1)
+                        ret.Add(new KeyAndValue(item.Split('=')[0], item.Split('=')[1]));
+                }
+                return ret.ToArray();
+            }
+            public static KeyAndValue GetVar(string name)
+            {
+                string tmp = "";
+                if (File.Exists(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\ConsoleGameEngine.tmp"))
+                {
+                    tmp = File.ReadAllText(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\ConsoleGameEngine.tmp");
+                }
+                else
+                {
+                    Crash("Ошибка, переменнные еще не объявлены");
+
+                }
+                string[] vars = tmp.Split(';');
+                KeyAndValue ret = new KeyAndValue(null, null);
+                foreach (var item in vars)
+                {
+                    if (item.Split('=')[0] == name)
+                    {
+                        if (item.Split('=').Length > 1)
+                            ret = (new KeyAndValue(item.Split('=')[0], item.Split('=')[1]));
+                    }
+                }
+                return ret;
+            }
         }
     }
 }
