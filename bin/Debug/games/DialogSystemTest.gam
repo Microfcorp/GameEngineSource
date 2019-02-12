@@ -1,0 +1,12 @@
+sett;razm:false,title:DLLTest,autoelse:false,color:9
+cls;
+mess;Добро пожаловать в игру DLLTest.
+newmodule;DS;DialogSystem.dll
+module;DS;AddPers:Name=Лехап
+module;DS;AddPers:Name=АеАе
+module;DS;AddPers:Name=Настька
+mess;Вам предстоит помирить 3 слуг.
+module;DS;Step:Null=Null
+module;DS;Step:Null=Null
+module;DS;Step:Null=Null
+pause;

@@ -1,0 +1,14 @@
+c:\users\лехап\documents\visual studio 2015\Projects\game\game\bin\Debug\game.exe
+c:\users\лехап\documents\visual studio 2015\Projects\game\game\bin\Debug\game.pdb
+c:\users\лехап\documents\visual studio 2015\Projects\game\game\obj\Debug\game.csprojResolveAssemblyReference.cache
+c:\users\лехап\documents\visual studio 2015\Projects\game\game\obj\Debug\game.exe
+c:\users\лехап\documents\visual studio 2015\Projects\game\game\obj\Debug\game.pdb
+C:\Users\10 измерение\Documents\Visual Studio 2015\Projects\game\obj\Debug\game.exe
+C:\Users\10 измерение\Documents\Visual Studio 2015\Projects\game\obj\Debug\game.pdb
+C:\Users\10 измерение\Documents\Visual Studio 2015\Projects\game\obj\Debug\game.csprojResolveAssemblyReference.cache
+C:\Users\10 измерение\Documents\Visual Studio 2015\Projects\game\bin\Debug\game.exe
+C:\Users\10 измерение\Documents\Visual Studio 2015\Projects\game\bin\Debug\game.pdb
+C:\Users\10 измерение\Documents\Visual Studio 2015\Projects\game\bin\Debug\SystemModule.dll
+C:\Users\10 измерение\Documents\Visual Studio 2015\Projects\game\bin\Debug\SystemModule.pdb
+C:\Users\Лехап\Documents\Visual Studio 2015\Projects\game\game\bin\Debug\SystemModule.dll
+C:\Users\Лехап\Documents\Visual Studio 2015\Projects\game\game\bin\Debug\SystemModule.pdb

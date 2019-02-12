@@ -1,0 +1,26 @@
+sett;razm:false,title:Crypting,autoelse:false,color:0
+//int;X:200
+//Applications;Resize;$X;600
+cls;
+func;test
+mess;Добро пожаловать в Test.
+//crash;
+pause;
+mess;Зашифровываю.
+cryptogam;getcurrentdirect:cryptoinc.gam;getcurrentdirect:cryptoinc.gam.cyt
+mess;Зашифровал.
+pause;
+mess;Расшифровываю.
+encryptogam;getcurrentdirect:cryptoinc.gam.cyt;getcurrentdirect:cryptoinc.gam
+mess;Расшифровал.
+pause;
+mess;Подключаю.
+include;getcurrentdirect:cryptoinc.gam
+pause;
+finish;
+function;test
+isfunction;
+mess;Функция, функция
+mess;Тело, тело
+mess;Кто то батя в C#
+}

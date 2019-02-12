@@ -1,0 +1,42 @@
+sett;razm:false,title:BigBunt,autoelse:true,color:0
+cls;
+//cashe;91.202.27.167/games;Бармалей.jpg,art1.art
+printimg;getcurrentdirect:Бармалей.jpg
+mess;Добро пожаловать в игру BigBunt
+mess;вы должны поднять бунт или сдохнуть))
+mess;Ну...
+mess;начали...
+mess;Если что, то он за тобой придёт
+ascllart;getcurrentdirect:art1.art,36-74
+mess;
+mess;Вам хватит 100000000000000000000000000000000000000000000000000000000000000000000000000 жалких душ для бунта
+if;да,нет,else;2
+нет:closegame;Хватило бы..... наверно
+да:mess;Людишек жалеть не надо))
+else:
+mess;
+mess;Что важнее для бунта: Paint или ствол
+if;paint,ствол,else;2
+ствол:closegame;Со стволом вам дорога в тюрягу
+paint:mess;Paint - это лучшее информационное оружие
+else:
+mess;
+mess;Людишки
+if;да,нет,else;2
+да:closegame;Щас прям
+нет:mess;Нет, психишки
+else:
+mess;
+mess;Думай: Когда бунт надо поднять: днём или ночью
+if;днём,ночью,else;2
+днём:closegame;Ты суицидник
+ночью:mess;Правильно
+else:
+mess;
+mess;Сначала разносим: тюрягу или бомжатник
+if;тюрягу,бомжатник,else;2
+бомжатник:closegame;Чем тебе поможет бомж?
+тюрягу:mess;Зыки лучшая помощь
+else:
+ascllart;getcurrentdirect:art1.art,1-34
+finish;Молодец. Ты справился с игрой большой бунт. Теперь ты можешь иди и бунтовать против кошкадунов и червяков))
