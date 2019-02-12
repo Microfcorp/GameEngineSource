@@ -16,6 +16,14 @@ namespace GameModule
             {
                 Perses.Add(data.Params["Name"].ToLower(), new Perses(data.Params["Name"].ToLower()));
             }
+            else if (data.Name == "PrintVars")
+            {
+                Console.WriteLine("Вы объявили переменные: ");
+                foreach (var item in GameEngine.Vars.GetVars())
+                {
+                    Console.WriteLine(item.Key + " = " + item.Value);
+                }               
+            }
             else if (data.Name == "Step")
             {
                 Console.WriteLine("Вы пойдете к ");
