@@ -10,6 +10,7 @@ if;$text1,нет,else;2
 $text1:mess;Правильно
 нет:mess;Ошибочка
 else:finish;tt
+endif;
 mess;
 
 int;numm1:1

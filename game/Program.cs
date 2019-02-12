@@ -11,13 +11,55 @@ using System.Net;
 using System.Reflection;
 using SystemModule;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace game
 {
-    class Program
+    internal delegate void SignalHandler(ConsoleSignal consoleSignal);
+
+    internal enum ConsoleSignal
     {
+        CtrlC = 0,
+        CtrlBreak = 1,
+        Close = 2,
+        LogOff = 5,
+        Shutdown = 6
+    }
+
+    internal static class ConsoleHelper
+    {
+        [DllImport("Kernel32", EntryPoint = "SetConsoleCtrlHandler")]
+        public static extern bool SetSignalHandler(SignalHandler handler, bool add);
+    }
+
+    public sealed class Program
+    {
+        private static void DeleteTemp()
+        {
+            if (File.Exists(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\ConsoleGameEngine.tmp"))
+            {
+                File.Delete(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\ConsoleGameEngine.tmp");
+            }
+        }
+        private static void CreateTemp()
+        {
+            File.WriteAllText(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\ConsoleGameEngine.tmp", "");
+        }
+        private static void HandleConsoleSignal(ConsoleSignal consoleSignal)
+        {// TO DO
+            DeleteTemp();           
+        }
+
+        private static SignalHandler signalHandler;
+
         static void Main(string[] args)
         {
+            signalHandler += HandleConsoleSignal;
+            ConsoleHelper.SetSignalHandler(signalHandler, true);
+
+            DeleteTemp();
+            CreateTemp();
+
             if (args.Length <= 0)
             {
                 Console.Title = "Запуск игры";
@@ -168,10 +210,163 @@ namespace game
             //Console.WriteLine("Successfully Downloaded File \"{0}\" from \"{1}\"", fileName, myStringWebResource);
             //Console.WriteLine("\nDownloaded file saved in the following file system folder:\n\t" + Application.StartupPath);
         }
+        /*
+         * 
+         * Я разрабатываю свой мини-интерпретатор (не спрашивайте зачем), так вот у меня возникла проблема: "Препретатор"(как я его назвал) в самом начале обходит весь файл с кодом и ищет по ключевому слову "function" функции, а затем добавляет их в список в виде структуры (указывается номер строки её начала). Далее, в основном цикле, когда доходит очередь до строки вызова функции, "постпретатор" берёт структуру из списка и добавляет в неё номер строки инициализатора этой функции, затем оно перед символом завершения функции ("}") оно пишет команду вида "goto;8" и затем переводит номер строки выполнения на номер строку начала функции, затем после выполнения функции оно должно перевести номер строки выполнения обратно в основной цикл. Но функция может находится в любой части скрипта, поэтому и был придуман "препретатор". У меня же с одной функцией, всё работает, а вот с двумя уже не хочет: оно почему-то не подставляет команду перевода номера строки в первую функцию, а во вторую подставляет нормально.
+         * 
+         * 
+         * */
+
+        /// <summary>
+        /// Структура функции
+        /// </summary>
+        struct Function
+        {
+            public int start;
+            public int point;
+            public string name;
+        }
+
+        /// <summary>
+        /// Список структур функции
+        /// </summary>
+        static SortedList<string, Function> funct = new SortedList<string, Function>();
+
+        /// <summary>
+        /// Препретатор и постпретатор функция
+        /// </summary>
+        /// <param name="game">Массив строк всего скрипта</param>
+        /// <param name="main">Сам скрипт</param>
+        public static void Compilation(string[] game, ref string main, string namefunc = null)
+        {
+            //funct.Clear();
+            for (int i = 0; i < game.Length; i++)
+            {
+                game = main.Split('\n');
+                if (game[i].StartsWith("/*"))
+                {
+                    int o = 0;
+                    for (; !game[i + o].TrimEnd('\n', '\r', '\t').EndsWith("*/"); o++)
+                    {
+                        game[i + o] = game[i + o].Insert(0, "//");
+                    }
+                    game[i + (o)] = game[i + (o)].Insert(0, "//");
+                    main = string.Join("\n", game);
+                    //Console.WriteLine(main);
+                }
+                if (game[i].Split(';')[0] == "function")
+                {
+                    
+                    //создание или "взятие" функции
+                    Function fn;
+                    if(namefunc != null)
+                    {
+                        fn = funct[namefunc]; //получем функцию из списка по её имени
+                    }
+                    else if (!funct.ContainsKey(game[i].Split(';')[1]))
+                    {
+                        fn = new Function();
+                        fn.start = i + 1;
+                        string name = game[i].Split(';')[1].Replace("{", "");
+                        fn.name = name;
+                        funct.Add(name, fn);
+                    }
+                    else
+                    {
+                        fn = funct[game[i].Split(';')[1]];
+                    }
+
+                    //Подсчёт строк функции
+                    int o = 1;
+                    for (; !game[i + o].TrimEnd('\n', '\r', '\t').EndsWith("}"); o++) ;
+
+                    var rrrhhh = ""; //временная переменная с итоговым кодом скрипта
+                    var telo = "";//тело функции
+                    for (int p = 0; p < ((i + o)); p++)
+                    {
+                        rrrhhh += game[p] + "\n";  //заполнение до конца функции                      
+                    }
+
+                    //Console.WriteLine(rrrhhh);
+
+                    for (int q = i; q < i+o; q++)
+                    {
+                        telo += game[q] + "\n"; //заполнение тела
+                    }
+                    telo = telo.Split('\n')[telo.Split('\n').Length - 2];//обрезка } (там 2 должно быть, потому что индекс с 0, а количество с 1)
+
+                    //Console.WriteLine(telo);
+                    int lenghtgoto = 0;
+                    if (!telo.Contains("goto;")){
+                        rrrhhh = rrrhhh.Insert(rrrhhh.Length, String.Format("goto;{0}", fn.point) + "\n}");//если "гото" нет, то добавляем                        
+                        lenghtgoto = (String.Format("goto;{0}", fn.point) + "\n}").Length; //вычисляем длинну вставки
+                    }
+                    else//иначе изменяем
+                    {
+                        rrrhhh = rrrhhh.Substring(0, rrrhhh.Length - 3);//обрезаем перенос строки и }
+                        int y = rrrhhh.Length - 1;//получаем длинну в виде индекса
+                        int t = 0;//создает временную переменную
+                        for (; rrrhhh[y] == ';'; y--, t++) ;//считаем от конца и до ; (это символ передачи аргументов)
+                        //t++;
+                        rrrhhh = rrrhhh.Substring(0, rrrhhh.Length - t);//обрезаем по него
+                        rrrhhh += ";" + fn.point.ToString() + "\n}";//добавляем новый "гото"
+                        //Console.WriteLine(rrrhhh);
+                    }
+                    rrrhhh = rrrhhh.Insert(rrrhhh.Length, main.Substring(rrrhhh.Length - (lenghtgoto))); //Добавляем всё что после функции
+                    //Console.WriteLine(rrrhhh);
+                    main = rrrhhh; //изменяем основной скрипт                                    
+                }
+
+            }
+        }   
+        
+        private static void RenameVar(ref SortedList<string, string> list, ref string gameS)
+        {
+            string[] game = gameS.Split('\n');
+            for (int i = 0; i < game.Length; i++)
+            {
+                game = gameS.Split('\n');
+                foreach (var item in list)
+                {
+                    if (gameS.Contains("$" + item.Key))
+                        gameS = gameS.Replace("$" + item.Key, item.Value);
+                }
+            }
+            //Console.WriteLine(gameS);
+
+            string tmp = File.ReadAllText(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\ConsoleGameEngine.tmp");
+            foreach (var item in list)
+            {
+                tmp += item.Key + "=" + item.Value + ";";
+            }
+            File.WriteAllText(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData, Environment.SpecialFolderOption.Create) + "\\ConsoleGameEngine.tmp", tmp);
+
+        }
+        private static void RenameVar(ref SortedList<string, int> list, ref string gameS)
+        {
+            string[] game = gameS.Split('\n');
+            for (int i = 0; i < game.Length; i++)
+            {
+                game = gameS.Split('\n');
+                foreach (var item in list)
+                {
+                    if (gameS.Contains("$" + item.Key))
+                        gameS = gameS.Replace("$" + item.Key, item.Value.ToString());
+                }
+            }
+            //Console.WriteLine(gameS);
+            string tmp = File.ReadAllText(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\ConsoleGameEngine.tmp");
+            foreach (var item in list)
+            {
+                tmp += item.Key + "=" + item.Value.ToString() + ";";
+            }
+            File.WriteAllText(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData, Environment.SpecialFolderOption.Create) + "\\ConsoleGameEngine.tmp", tmp);
+        }
 
         public static void loadgame(string path)
         {
-            string path1 = path.Replace(path.Split('\\')[path.Split('\\').Length - 1], "");
+            path = path.TrimEnd('\r', '\t');
+            string path1 = path.Replace(path.Split('\\')[path.Split('\\').Length - 1], "") + "\\";
             string game = File.ReadAllText(path).Replace("\r", "").Replace("getcurrentdirect:", path1).Replace("currentname:", Environment.UserName).Replace("newline:", Environment.NewLine);
             bool rasm = false;
             bool autoelse = false;
@@ -187,32 +382,20 @@ namespace game
             // получаем метод GetResult
             SortedList<string, MethodInfo> method = new SortedList<string, MethodInfo>();
 
+            //Начало препретатора
+            Console.WriteLine("Start Compilation");
+            Compilation(game.Split('\n'), ref game);
+            lenght = game.Split('\n').Length;
+            Console.WriteLine("Stop Compilation");
+            //конец препретатора
+
             for (int i = 0; i < lenght; i++)
             {
                 sled:
                 switch (game.Split('\n')[i].Split(';')[0])
                 {
                     case "mess":
-                        if (game.Split('\n')[i].Split(';')[1].StartsWith("$"))
-                        {
-                            if (strings.ContainsKey(game.Split('\n')[i].Split(';')[1].Substring(1)))
-                            {
-                                Console.WriteLine(strings[game.Split('\n')[i].Split(';')[1].Substring(1)]);
-                            }
-                            else if (ints.ContainsKey(game.Split('\n')[i].Split(';')[1].Substring(1)))
-                            {
-                                Console.WriteLine(ints[game.Split('\n')[i].Split(';')[1].Substring(1)]);
-                            }
-                            else
-                            {
-                                Console.WriteLine(game.Split('\n')[i].Split(';')[1]);
-                            }
-                        }
-                        else
-                        {
-                            Console.WriteLine(game.Split('\n')[i].Split(';')[1]);
-                        }
-
+                        Console.WriteLine(game.Split('\n')[i].Split(';')[1]);
                         break;
                     case "cls":
                         Console.Clear();
@@ -232,7 +415,7 @@ namespace game
                         }
                         catch (Exception ex)
                         {
-                            Console.WriteLine("Error " + ex.Message);
+                            Console.WriteLine("Load module Error " + ex.Message);
                         }
                         break;
                     case "module":
@@ -243,29 +426,19 @@ namespace game
                             SortedList<string, string> list1 = new SortedList<string, string>();
                             foreach (var item in game.Split('\n')[i].Split(';')[2].Split(':')[1].Split(','))
                             {
-                                if (item.Split('=')[1].StartsWith("$"))
-                                {
-                                    if (strings.ContainsKey(item.Split('=')[1].Substring(1)))
-                                    {
-                                        list1.Add(item.Split('=')[0], strings[item.Split('=')[1].Substring(1)]);
-                                    }
-                                    else if (ints.ContainsKey(item.Split('=')[1].Substring(1)))
-                                    {
-                                        list1.Add(item.Split('=')[0], ints[item.Split('=')[1].Substring(1)].ToString());
-                                    }
-                                    else
-                                    {
-                                        list1.Add(item.Split('=')[0], item.Split('=')[1]);
-                                    }
-                                }
-                                else
-                                {
+  
                                     list1.Add(item.Split('=')[0], item.Split('=')[1]);
-                                }                              
                             }
 
                             SystemModule.CommandData tmpaa = new CommandData(game.Split('\n')[i].Split(';')[2].Split(':')[0], list1);
-                            object result = method[name].Invoke(obj[name], new object[] { tmpaa });
+                            try
+                            {
+                                object result = method[name].Invoke(obj[name], new object[] { tmpaa });
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine("Function module Error " + ex.Message);
+                            }
                             //Console.WriteLine((result));
                         }
                         break;
@@ -285,14 +458,22 @@ namespace game
                         break;
                     case "string":
                         strings.Add(game.Split('\n')[i].Split(';')[1].Split(':')[0], game.Split('\n')[i].Split(';')[1].Split(':')[1]);
+                        RenameVar(ref strings, ref game);
+                        lenght = game.Split('\n').Length;//пересчёт новой общей длинны скрипта
                         break;
                     case "int":
                         ints.Add(game.Split('\n')[i].Split(';')[1].Split(':')[0], Convert.ToInt32(game.Split('\n')[i].Split(';')[1].Split(':')[1]));
+                        RenameVar(ref ints, ref game);
+                        lenght = game.Split('\n').Length;//пересчёт новой общей длинны скрипта
                         break;
                     case "Applications":
-                        if(game.Split('\n')[i].Split(';')[1] == "Start")
+                        if (game.Split('\n')[i].Split(';')[1] == "Start")
                         {
                             Process.Start(game.Split('\n')[i].Split(';')[2], game.Split('\n')[i].Split(';')[3]);
+                        }
+                        else if (game.Split('\n')[i].Split(';')[1] == "Resize")
+                        {                           
+                            Console.SetBufferSize(int.Parse(game.Split('\n')[i].Split(';')[2]), int.Parse(game.Split('\n')[i].Split(';')[3]));
                         }
                         break;
                     case "random":
@@ -363,7 +544,13 @@ namespace game
                         }
                         break;
                     case "include":
-                        game += File.ReadAllText(game.Split('\n')[i].Split(';')[1]);
+                        var rrrhhh = "";
+                        for (int p = 0; p < i + 1; p++)
+                        {
+                            rrrhhh += game.Split('\n')[p] + "\n";
+                        }
+
+                        game = (game.Insert(rrrhhh.Length, File.ReadAllText(game.Split('\n')[i].Split(';')[1]) + "\n"));
                         lenght = game.Split('\n').Length;
                         game = game.Replace("getcurrentdirect:", path1).Replace("currentname:", Environment.UserName).Replace("newline:", Environment.NewLine);
                         break;
@@ -372,6 +559,8 @@ namespace game
                         player.SoundLocation = game.Split('\n')[i].Split(';')[1];
                         player.Play();
                         break;
+                    case "crash":
+                        throw new Exception(game.Split('\n')[i].Split(';')[1]);                       
                     case "sett":
                         SortedList<string, string> Sett = new SortedList<string, string>();
                         foreach (var item in game.Split('\n')[i].Split(';')[1].Split(','))
@@ -381,11 +570,21 @@ namespace game
                         rasm = Convert.ToBoolean(Sett["razm"]);
                         autoelse = Convert.ToBoolean(Sett["autoelse"]);
                         Console.Title = Sett["title"];
-                        Console.BackgroundColor = (ConsoleColor)Convert.ToInt32(Sett["color"]);
+                        Console.BackgroundColor = (ConsoleColor)Convert.ToInt32(Sett["color"]);                        
                         break;
                     case "goto":
                         i = Convert.ToInt32(game.Split('\n')[i].Split(';')[1]) - 2;
                         //goto sled;
+                        break;
+                    case "func":
+                        //func;test
+                        Function fc = funct[game.Split('\n')[i].Split(';')[1]]; //получение из аргумента имени функции                      
+                        fc.point = i+2; //передача текущего номера строки
+                        funct[game.Split('\n')[i].Split(';')[1]] = fc; //замена функции в списке
+                        Compilation(game.Split('\n'), ref game, game.Split('\n')[i].Split(';')[1]); //запуск постпретатора
+                        //Compilation(game.Split('\n'), ref game);
+                        lenght = game.Split('\n').Length;//пересчёт новой общей длинны скрипта
+                        i = fc.start;//передача управления другой строке
                         break;
                     case "close":
                         System.Diagnostics.Process.GetCurrentProcess().Kill();
@@ -397,6 +596,18 @@ namespace game
                     case "pause":
                         Console.WriteLine(game.Split('\n')[i].Split(';')[1]);
                         Console.ReadLine();
+                        break;
+                    case "cryptogam":
+                        string cryptopath = "";
+                        string cryptotopath = "";
+                        cryptotopath = (@game.Split('\n')[i].Split(';')[2]);
+                        Crypting.Main.EncryptFile(cryptopath, cryptotopath);
+                        break;
+                    case "encryptogam":
+                        string cryptopath1 = "";
+                        string cryptotopath1 = "";
+                        cryptotopath1 = (@game.Split('\n')[i].Split(';')[2]);
+                        Crypting.Main.DecryptFile(cryptopath1, cryptotopath1);
                         break;
                     case "closegame":
                         Console.WriteLine(game.Split('\n')[i].Split(';')[1]);
