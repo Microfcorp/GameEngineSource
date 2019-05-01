@@ -1,0 +1,14 @@
+sett;razm:false,title:OSS,autoelse:false,color:2
+cls;
+include;getcurrentdirect:OSSinc.gam.inc ##Подключение файла локалей
+mess;$Helloy ##Вывод приветствия
+read;Новое значение $Helloy;Helloy
+connectstring;Новое значение $Helloy равно: ;$Helloy;consoleprint:
+##mess;$Helloy ##Вывод приветствия
+func;EtInit ##Инициализация модуля Интернета
+set;ConnectParams;https://microfcorp.000webhostapp.com/ctw/update.php?type=cheek ##Устанавливаю переменную запроса
+func;EtConnectServer ##Произвожу запрос
+mess;$ServerRequstConnect    ##Показываю ответ
+pause;
+close;
+including;getcurrentdirect:EthernetInc.gam.inc

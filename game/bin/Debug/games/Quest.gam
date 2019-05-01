@@ -1,0 +1,37 @@
+sett;razm:false,title:Quest,autoelse:false,color:2
+cls;
+including;getcurrentdirect:QuestLang.gaminc
+printmess;Идёт загрузка...;50
+func;QuestInit
+module;qm;AddStart:Text=$Start ##Line 0
+##Линия1
+module;qm;AddLine:ParentLine=Start,ParentText=Подойти и посмотреть,Name=11,Text=$11 ##Line 1 1.1
+module;qm;AddLine:ParentLine=Start,ParentText=Забиться под одеяло,Name=12,Text=$12 ##Line 2 1.2 (тупик)
+##Линия2
+module;qm;AddLine:ParentLine=11,ParentText=Закрыть все двери,Name=21,Text=$21 ##Line 3 2.1
+module;qm;AddLine:ParentLine=11,ParentText=Забиться под одеяло,Name=22,Text=$22 ##Line 4 2.2(тупик)
+##Линия3
+module;qm;AddLine:ParentLine=21|12|22,ParentText=Продолжить,Name=31,Text=$31 ##Line 5 3.1
+##Линия4
+module;qm;AddLine:ParentLine=31,ParentText=Вы сделаете укол,Name=41,Text=$41 ##Line 5 3.1
+module;qm;AddLine:ParentLine=31,ParentText=Вы не станете это колоть,Name=42,Text=$42 ##Line 6 3.2 (тупик)
+##Линия5
+module;qm;AddLine:ParentLine=42,ParentText=Убежать,Name=51,Text=$51 ##Line 5 3.1
+module;qm;AddLine:ParentLine=42,ParentText=Остаться,Name=52,Text=$52 ##Line 6 3.2 (тупик)
+##Линия6
+module;qm;AddLine:ParentLine=51|52,ParentText=Продолжить,Name=61,Text=$Final ##Line 5 3.1
+##Линия7
+playmusic;getcurrentdirect:\\Died.wav
+mess;Загрузка завершена
+mess;
+pause;Нажмите любую кнопку для старта
+
+func;QuestStart
+func;SteepQuestReadPrintMess
+pause;Игра окончена. Спасибо большое за её тест. Надеемся, что вам понравилось, можете дописать сюжетную линию
+close;
+including;getcurrentdirect:QuestModule.gaminc
+function;QuestStop{
+	isfunction;
+	mess;Сюжетная линия окончена
+}

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace game.Crypting
+namespace ConsoleGameEngine.Crypting
 {
     public class Main
     {
@@ -19,7 +19,7 @@ namespace game.Crypting
 
             try
             {
-                string password = @"myKey123"; // Your Key Here
+                string password = @"mIcKeyGE"; // Your Key Here
                 UnicodeEncoding UE = new UnicodeEncoding();
                 byte[] key = UE.GetBytes(password);
 
@@ -58,7 +58,7 @@ namespace game.Crypting
         {
 
             {
-                string password = @"myKey123"; // Your Key Here
+                string password = @"mIcKeyGE"; // Your Key Here
 
                 UnicodeEncoding UE = new UnicodeEncoding();
                 byte[] key = UE.GetBytes(password);
@@ -81,6 +81,44 @@ namespace game.Crypting
                 cs.Close();
                 fsCrypt.Close();
 
+            }
+        }
+
+        ///<summary>
+        /// Decrypts a file using Rijndael algorithm.
+        ///</summary>
+        ///<param name="inputFile"></param>
+        ///<param name="outputFile"></param>
+        public static string DecryptFileRead(string inputFile)
+        {
+
+            {
+                string password = @"mIcKeyGE"; // Your Key Here
+
+                UnicodeEncoding UE = new UnicodeEncoding();
+                byte[] key = UE.GetBytes(password);
+
+                FileStream fsCrypt = new FileStream(inputFile, FileMode.Open);
+
+                RijndaelManaged RMCrypto = new RijndaelManaged();
+
+                CryptoStream cs = new CryptoStream(fsCrypt,
+                    RMCrypto.CreateDecryptor(key, key),
+                    CryptoStreamMode.Read);
+
+                FileStream fsOut = new FileStream(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)+"out.cr", FileMode.Create);
+
+                int data;
+                while ((data = cs.ReadByte()) != -1)
+                    fsOut.WriteByte((byte)data);
+
+                fsOut.Close();
+                cs.Close();
+                fsCrypt.Close();
+
+                string tmp = File.ReadAllText(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "out.cr");
+                File.Delete(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "out.cr");
+                return tmp;
             }
         }
     }

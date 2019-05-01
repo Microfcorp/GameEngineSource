@@ -1,10 +1,10 @@
 sett;razm:false,title:Crypting,autoelse:false,color:0
-//int;X:200
-//Applications;Resize;$X;600
-//cls;
+##int;X:200
+##Applications;Resize;$X;600
+cls;
 func;test
 mess;Добро пожаловать в Test.
-//crash;Стоп
+##crash;Стоп
 pause;
 mess;Зашифровываю.
 cryptogam;getcurrentdirect:cryptoinc.gam;getcurrentdirect:cryptoinc.gam.cyt

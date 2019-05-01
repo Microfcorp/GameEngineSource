@@ -3,6 +3,8 @@ cls;
 mess;Добро пожаловать в игру StarBuilders.
 mess;Продолжить?
 string;text1:123
+conststring;text77:Привет
+mess;$text77
 mess;$text1
 mess;Введите значение
 

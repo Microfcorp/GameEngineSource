@@ -1,0 +1,39 @@
+function;QuestInit{##Инициализация
+	isfunction;
+	newmodule;qm;C:\Users\Лехап\Documents\Visual Studio 2015\Projects\game\QuestModule\bin\Debug\QuestModule.dll
+	module;qm;Start:p=t
+	mess;$QuestRequest
+	##string;ConnectParams:localhost
+	string;SteepSet:Start
+}
+
+function;QuestStart{##Создание точки входа
+	isfunction;
+	set;SteepSet;Start
+	module;qm;GetSteep:Steep=$SteepSet##Начало со старта
+	mess;$QuestRequestSteep
+}
+
+function;SteepQuest{##Перейти на квест по переменной
+	isfunction;
+	module;qm;GetSteep:Steep=$SteepSet
+	mess;$QuestRequestSteep
+}
+
+function;SteepQuestRead{##Войти в цикл до завершению сюжетной линии
+	isfunction;
+	read;Ваш выбор:;SteepSet
+	module;qm;GetSteep:Steep=$SteepSet
+	mess;$QuestRequestSteep
+	Logical;ifs;$QuestRequest;==;Zero;QuestStop
+	Logical;ifs;$QuestRequest;!=;Zero;SteepQuestRead
+}
+
+function;SteepQuestReadPrintMess{##Войти в цикл до завершению сюжетной линии с использованием printmess
+	isfunction;
+	read;Ваш выбор:;SteepSet
+	module;qm;GetSteep:Steep=$SteepSet
+	printmess;$QuestRequestSteep;60
+	Logical;ifs;$QuestRequest;==;Zero;QuestStop
+	Logical;ifs;$QuestRequest;!=;Zero;SteepQuestReadPrintMess
+}

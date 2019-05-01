@@ -4,12 +4,12 @@ cls;
 mess;Добро пожаловать в игру "Угадай песню по словам"
 mess;Вам престоит угадывать
 mess;
+include;getcurrentdirect:Musicinc.gam
 mess;Эти облака. Фиолетовая вата
 if;розовое вино,else;2
 розовое вино:goto;19
 else:closegame;Не верно
 mess;
-include;getcurrentdirect:Musicinc.gam
 mess;.NET или Java
 if;gапа может в си,else;1
 gапа может в си:mess;C C C C C
