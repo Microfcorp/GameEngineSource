@@ -13,13 +13,23 @@ namespace SystemModule
 {
     public class CommandData
     {
-        public string Name = "";
-        public SortedList<string, string> Params;
+        public string Name
+        {
+            get;
+            private set;
+        }
+            
+        public SortedList<string, string> Params
+        {
+            get;
+            private set;
+        }
 
         public CommandData(string Name, SortedList<string,string> Params)
         {
             this.Name = Name;
             this.Params = Params;
+            this.Params.Values.ToList().ForEach(tmp => tmp = tmp.TrimEnd(' '));
         }
     }
     public static class GameEngine
@@ -161,6 +171,10 @@ namespace SystemModule
             Application.Restart();
             System.Diagnostics.Process.GetCurrentProcess().Kill();
         }
+        public static string replace(string In, string From, string To)
+        {
+            return In.Replace(From,To);
+        }
         public static class Applications
         {
             public static void Start(string name, string args)
@@ -170,6 +184,26 @@ namespace SystemModule
             public static void Resize(int X, int Y)
             {
                 Console.SetBufferSize(X, Y);
+            }
+        }
+        public static class NotValueVars
+        {
+            public static string One
+            {
+                get
+                {
+                    return ";";
+                }
+            }
+        }
+        public static class ValueVars
+        {
+            public static string One
+            {
+                get
+                {
+                    return "|";
+                }
             }
         }
         public static int Random(int min, int max)
@@ -276,6 +310,89 @@ namespace SystemModule
                     }
                 }
                 return ret;
+            }
+            public static bool IsVars(string name)
+            {
+                string tmp = "";
+                if (File.Exists(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\ConsoleGameEngine.tmp"))
+                {
+                    tmp = File.ReadAllText(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\ConsoleGameEngine.tmp");
+                }
+                else
+                {
+                    Crash("Ошибка, переменнные еще не объявлены");
+
+                }
+                string[] vars = tmp.Split(';');
+                foreach (var item in vars)
+                {
+                    if (item.Split('=')[0] == name)
+                        return true;
+                }
+                return false;
+            }
+            public static KeyAndValue AddVar(string name, string value, bool AddAndChange = false)
+            {
+                if (AddAndChange)
+                {
+                    if (IsVars(name))
+                    {
+                        ChangeVar(name, value);
+                    }
+                    else
+                    {
+                        AddVar(name, value);
+                    }
+                }
+                else
+                {
+                    AddVar(name, value);
+                }
+                return new KeyAndValue(name, value);
+            }
+            public static KeyAndValue AddVar(string name, string value)
+            {
+                if (File.Exists(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\ConsoleGameEngine.tmp"))
+                {
+                    string tmp = File.ReadAllText(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\ConsoleGameEngine.tmp");
+                    tmp += name + "=" + value + ";";
+                    File.WriteAllText(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData, Environment.SpecialFolderOption.Create) + "\\ConsoleGameEngine.tmp", tmp);
+                }
+                else
+                {
+                    Crash("Ошибка, переменнные еще не объявлены");
+                }
+                return new KeyAndValue(name, value);
+            }
+            public static KeyAndValue ChangeVar(string name, string value)
+            {
+                if (File.Exists(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\ConsoleGameEngine.tmp"))
+                {
+                    string tmp = File.ReadAllText(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\ConsoleGameEngine.tmp");
+                    string tmp1 = "";
+
+                    foreach (var item in tmp.Split(';'))
+                    {
+                        if (item.Split('=').Length > 1)
+                        {
+                            if (item.Split('=')[0] == name)
+                            {
+                                tmp1 += item.Split('=')[0] + "=" + value + ";";
+                            }
+                            else
+                            {
+                                tmp1 += item.Split('=')[0] + "=" + item.Split('=')[1] + ";";
+                            }
+                        }
+                    }
+                    
+                    File.WriteAllText(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData, Environment.SpecialFolderOption.Create) + "\\ConsoleGameEngine.tmp", tmp1);
+                }
+                else
+                {
+                    Crash("Ошибка, переменнные еще не объявлены");
+                }
+                return new KeyAndValue(name, value);
             }
         }
     }
