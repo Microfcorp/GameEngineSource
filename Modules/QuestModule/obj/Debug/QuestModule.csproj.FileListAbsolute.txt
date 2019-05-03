@@ -1,0 +1,9 @@
+C:\Users\Лехап\Documents\Visual Studio 2015\Projects\game\QuestModule\bin\Debug\QuestModule.dll
+C:\Users\Лехап\Documents\Visual Studio 2015\Projects\game\QuestModule\bin\Debug\QuestModule.pdb
+C:\Users\Лехап\Documents\Visual Studio 2015\Projects\game\QuestModule\bin\Debug\SystemModule.dll
+C:\Users\Лехап\Documents\Visual Studio 2015\Projects\game\QuestModule\bin\Debug\SystemModule.pdb
+C:\Users\Лехап\Documents\Visual Studio 2015\Projects\game\QuestModule\obj\Debug\QuestModule.dll
+C:\Users\Лехап\Documents\Visual Studio 2015\Projects\game\QuestModule\obj\Debug\QuestModule.pdb
+C:\Users\Лехап\Documents\Visual Studio 2015\Projects\game\QuestModule\obj\Debug\QuestModule.csprojResolveAssemblyReference.cache
+C:\Users\Лехап\Documents\Visual Studio 2015\Projects\game\QuestModule\bin\Debug\QuestLibrary.dll
+C:\Users\Лехап\Documents\Visual Studio 2015\Projects\game\QuestModule\bin\Debug\QuestLibrary.pdb

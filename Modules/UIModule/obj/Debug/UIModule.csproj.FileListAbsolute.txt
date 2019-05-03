@@ -5,3 +5,10 @@ C:\Users\10 измерение\Documents\Visual Studio 2015\Projects\UIModule\ob
 C:\Users\10 измерение\Documents\Visual Studio 2015\Projects\UIModule\obj\Debug\UIModule.pdb
 C:\Users\10 измерение\Documents\Visual Studio 2015\Projects\UIModule\bin\Debug\SystemModule.dll
 C:\Users\10 измерение\Documents\Visual Studio 2015\Projects\UIModule\bin\Debug\SystemModule.pdb
+C:\Users\Лехап\Documents\Visual Studio 2015\Projects\game\UIModule\bin\Debug\UIModule.dll
+C:\Users\Лехап\Documents\Visual Studio 2015\Projects\game\UIModule\bin\Debug\UIModule.pdb
+C:\Users\Лехап\Documents\Visual Studio 2015\Projects\game\UIModule\bin\Debug\SystemModule.dll
+C:\Users\Лехап\Documents\Visual Studio 2015\Projects\game\UIModule\bin\Debug\SystemModule.pdb
+C:\Users\Лехап\Documents\Visual Studio 2015\Projects\game\UIModule\obj\Debug\UIModule.csprojResolveAssemblyReference.cache
+C:\Users\Лехап\Documents\Visual Studio 2015\Projects\game\UIModule\obj\Debug\UIModule.dll
+C:\Users\Лехап\Documents\Visual Studio 2015\Projects\game\UIModule\obj\Debug\UIModule.pdb
